@@ -12,15 +12,16 @@ module.exports = function (req, res) {
   res.statusCode = 201;
 
   const content = 'OK';
+  const response = Buffer.from(content);
 
   res.setHeader("content-type", "text/html");
   res.setHeader("date", "Sat, 26 Oct 1985 08:20:00 GMT");
   res.setHeader("connection", "close");
-  res.setHeader("content-length", content.length);
+  res.setHeader("content-length", response.length);
 
   res.setHeader("x-yakbak-tape", path.basename(__filename, ".js"));
 
-  res.write(Buffer.from(content));
+  res.write(response);
 
   res.end();
 

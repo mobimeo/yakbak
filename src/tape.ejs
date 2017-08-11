@@ -12,16 +12,17 @@ module.exports = function (req, res) {
   res.statusCode = <%- JSON.stringify(res.statusCode) %>;
 
   const content = '<%- Buffer.concat(body).toString() %>';
+  const response = Buffer.from(content);
 <% delete res.headers['content-length'] -%>
 
 <% Object.keys(res.headers).forEach(function (key) { -%>
   res.setHeader(<%- JSON.stringify(key) %>, <%- JSON.stringify(res.headers[key]) %>);
 <% }); -%>
-  res.setHeader("content-length", content.length);
+  res.setHeader("content-length", response.length);
 
   res.setHeader("x-yakbak-tape", path.basename(__filename, ".js"));
 
-  res.write(Buffer.from(content));
+  res.write(response);
 
   res.end();
 
