@@ -1,7 +1,7 @@
 var path = require("path");
 
 /**
- * <%- req.method %> <%- decodeURIComponent(req.path) %>
+ * <%- req.method %> <%- decodeURIComponent(req.path).replace(/\*/, '') %>
  *
 <% Object.keys(req._headers).forEach(function (key) { -%>
  * <%- key %>: <%- req._headers[key].replace('/*', '/ *').replace('*/', '* /') %>
@@ -11,15 +11,18 @@ var path = require("path");
 module.exports = function (req, res) {
   res.statusCode = <%- JSON.stringify(res.statusCode) %>;
 
+  const content = '<%- Buffer.concat(body).toString() %>';
+<% delete res.headers['content-length'] -%>
+
 <% Object.keys(res.headers).forEach(function (key) { -%>
   res.setHeader(<%- JSON.stringify(key) %>, <%- JSON.stringify(res.headers[key]) %>);
 <% }); -%>
+  res.setHeader("content-length", content.length);
 
   res.setHeader("x-yakbak-tape", path.basename(__filename, ".js"));
 
-<% body.forEach(function (data) { -%>
-  res.write(new Buffer(<%- JSON.stringify(data.toString('base64')) %>, "base64"));
-<% }); -%>
+  res.write(Buffer.from(content));
+
   res.end();
 
   return __filename;

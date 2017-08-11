@@ -11,14 +11,17 @@ var path = require("path");
 module.exports = function (req, res) {
   res.statusCode = 201;
 
+  const content = 'OK';
+
   res.setHeader("content-type", "text/html");
   res.setHeader("date", "Sat, 26 Oct 1985 08:20:00 GMT");
   res.setHeader("connection", "close");
-  res.setHeader("content-length", "2");
+  res.setHeader("content-length", content.length);
 
   res.setHeader("x-yakbak-tape", path.basename(__filename, ".js"));
 
-  res.write(new Buffer("T0s=", "base64"));
+  res.write(Buffer.from(content));
+
   res.end();
 
   return __filename;
