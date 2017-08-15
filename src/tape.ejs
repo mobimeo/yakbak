@@ -1,14 +1,1 @@
-{
-  "status": <%- JSON.stringify(res.statusCode) %>,
-  "headers": {
-<% const keys = Object.keys(res.headers); -%>
-<% keys.forEach(function (key, index) { -%>
-<% if (index !== keys.length - 1) { -%>
-    <%- JSON.stringify(key) %>: <%- JSON.stringify(res.headers[key]) %><%- ',' %>
-<% } else { -%>
-    <%- JSON.stringify(key) %>: <%- JSON.stringify(res.headers[key]) %>
-<% } -%>
-<% }); -%>
-  },
-  "body": "<%- Buffer.concat(body).toString() %>"
-}
+<%- JSON.stringify(json, null, 2) %>
