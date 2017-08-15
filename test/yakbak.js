@@ -60,7 +60,7 @@ describe('yakbak', function () {
         .expect(201, 'OK')
         .end(function (err) {
           assert.ifError(err);
-          assert(fs.existsSync(tmpdir.join('3234ee470c8605a1837e08f218494326.js')));
+          assert(fs.existsSync(tmpdir.join('3234ee470c8605a1837e08f218494326.json')));
           done();
         });
       });
@@ -93,7 +93,7 @@ describe('yakbak', function () {
           .expect(201, 'OK')
           .end(function (err) {
             assert.ifError(err);
-            assert(fs.existsSync(tmpdir.join('3f142e515cb24d1af9e51e6869bf666f.js')));
+            assert(fs.existsSync(tmpdir.join('3f142e515cb24d1af9e51e6869bf666f.json')));
             done();
           });
         });
@@ -143,16 +143,15 @@ describe('yakbak', function () {
     });
 
     beforeEach(function (done) {
-      var file = '305c77b0a3ad7632e51c717408d8be0f.js';
+      var file = '305c77b0a3ad7632e51c717408d8be0f.json';
       var tape = [
-        'var path = require("path");',
-        'module.exports = function (req, res) {',
-        '  res.statusCode = 201;',
-        '  res.setHeader("content-type", "text/html")',
-        '  res.setHeader("x-yakbak-tape", path.basename(__filename, ".js"));',
-        '  res.end("YAY");',
+        '{',
+        '  "status": 201,',
+        '  "headers": {',
+        '    "content-type": "text/html"',
+        '  },',
+        '  "body": "YAY"',
         '}',
-        ''
       ].join('\n');
 
       fs.writeFile(tmpdir.join(file), tape, done);

@@ -1,30 +1,14 @@
-var path = require("path");
-
-/**
- * <%- req.method %> <%- decodeURIComponent(req.path).replace(/\*/, '') %>
- *
-<% Object.keys(req._headers).forEach(function (key) { -%>
- * <%- key %>: <%- req._headers[key].replace('/*', '/ *').replace('*/', '* /') %>
+{
+  "status": <%- JSON.stringify(res.statusCode) %>,
+  "headers": {
+<% const keys = Object.keys(res.headers); -%>
+<% keys.forEach(function (key, index) { -%>
+<% if (index !== keys.length - 1) { -%>
+    <%- JSON.stringify(key) %>: <%- JSON.stringify(res.headers[key]) %><%- ',' %>
+<% } else { -%>
+    <%- JSON.stringify(key) %>: <%- JSON.stringify(res.headers[key]) %>
+<% } -%>
 <% }); -%>
- */
-
-module.exports = function (req, res) {
-  res.statusCode = <%- JSON.stringify(res.statusCode) %>;
-
-  const content = '<%- Buffer.concat(body).toString() %>';
-  const response = Buffer.from(content);
-<% delete res.headers['content-length'] -%>
-
-<% Object.keys(res.headers).forEach(function (key) { -%>
-  res.setHeader(<%- JSON.stringify(key) %>, <%- JSON.stringify(res.headers[key]) %>);
-<% }); -%>
-  res.setHeader("content-length", response.length);
-
-  res.setHeader("x-yakbak-tape", path.basename(__filename, ".js"));
-
-  res.write(response);
-
-  res.end();
-
-  return __filename;
-};
+  },
+  "body": "<%- Buffer.concat(body).toString() %>"
+}

@@ -10,6 +10,7 @@ var buffer = require('./lib/buffer');
 var proxy = require('./lib/proxy');
 var record = require('./lib/record');
 var curl = require('./lib/curl');
+var tape =  require('./lib/tape');
 var debug = require('debug')('yakbak:server');
 
 /**
@@ -35,7 +36,6 @@ module.exports = function (host, opts) {
       return Promise.try(function () {
         return require.resolve(file);
       }).catch(ModuleNotFoundError, function (/* err */) {
-
         if (opts.noRecord) {
           throw new RecordingDisabledError('Recording Disabled');
         } else {
@@ -46,9 +46,10 @@ module.exports = function (host, opts) {
 
       });
     }).then(function (file) {
-      return require(file);
-    }).then(function (tape) {
-      return tape(req, res);
+      return [ file, require(file) ];
+    }).then(function (tuple) {
+      const [filename, json] = tuple;
+      return tape(req, res, json, filename);
     }).catch(RecordingDisabledError, function (err) {
       /* eslint-disable no-console */
       console.log('An HTTP request has been made that yakbak does not know how to handle');
@@ -70,7 +71,7 @@ module.exports = function (host, opts) {
   function tapename(req, body) {
     var hash = opts.hash || messageHash.sync;
 
-    return hash(req, Buffer.concat(body)) + '.js';
+    return hash(req, Buffer.concat(body)) + '.json';
   }
 
 };
