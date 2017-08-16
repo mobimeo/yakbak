@@ -1,4 +1,6 @@
 {
+  "url": "/",
+  "requestBody": {},
   "status": 201,
   "headers": {
     "content-type": "text/html",
